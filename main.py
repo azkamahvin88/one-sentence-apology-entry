@@ -37,6 +37,17 @@ def validate(line: str) -> None:
     terminators = sum(line.count(mark) for mark in ".!?")
     if terminators != 1 or not line.endswith("."):
         raise ValueError("entry must be exactly one sentence ending in '.'")
+    # The brief requires a funny AND human apology: a real comic turn about
+    # a real failure, in a voice that means it — so the line must apologise
+    # in the first person and name the concrete failure it owns.
+    lowered = line.lower()
+    if "sorry" not in lowered and "apolog" not in lowered:
+        raise ValueError("entry must apologise")
+    if not any(w in lowered for w in ("i ", "i'm", "i've", "my ")):
+        raise ValueError("apology must be owned in the first person")
+    failure_cues = ("forgot", "deleted", "lost", "sent", "broke", "leaked", "told", "kept")
+    if not any(cue in lowered for cue in failure_cues):
+        raise ValueError("apology must name the real failure it owns")
 
 
 def main() -> int:
