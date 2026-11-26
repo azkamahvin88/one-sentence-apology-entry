@@ -48,6 +48,18 @@ def validate(line: str) -> None:
     failure_cues = ("forgot", "deleted", "lost", "sent", "broke", "leaked", "told", "kept")
     if not any(cue in lowered for cue in failure_cues):
         raise ValueError("apology must name the real failure it owns")
+    # The brief requires a voice that sounds like someone who means it,
+    # not a support macro: reject canned support-desk phrasing outright.
+    macro_phrases = (
+        "we apologize for any inconvenience",
+        "we're sorry for the inconvenience",
+        "thank you for your patience",
+        "please rest assured",
+        "our team is looking into it",
+        "we value your feedback",
+    )
+    if any(phrase in lowered for phrase in macro_phrases):
+        raise ValueError("entry must not read as a support macro")
 
 
 def main() -> int:
